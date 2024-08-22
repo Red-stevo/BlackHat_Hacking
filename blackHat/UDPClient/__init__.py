@@ -6,7 +6,7 @@ class UDPClient:
     def __init__(self):
         self.client = None
         self.host_ip = "127.0.0.1"
-        self.host_port = 80
+        self.host_port = 1001
 
     def send_datagram(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -17,6 +17,7 @@ class UDPClient:
         print(data, addr)
 
 
-client = UDPClient()
+if __name__ == "__main__":
+    client = UDPClient()
+    client.send_datagram()
 
-client.send_datagram()

@@ -3,8 +3,8 @@ import socket
 
 class Tcp_Client:
     def __init__(self):
-        self.host_ip = "google.com"
-        self.host_port = 80
+        self.host_ip = "127.0.0.1"
+        self.host_port = 1001
         self.client = None
 
     def connect(self):
@@ -16,5 +16,6 @@ class Tcp_Client:
         print(response)
 
 
-client = Tcp_Client()
-client.connect()
+if __name__ == "__main__":
+    client = Tcp_Client()
+    client.connect()
