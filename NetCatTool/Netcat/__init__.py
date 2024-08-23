@@ -15,12 +15,16 @@ class Netcat:
 
     def run(self):
         if self.args.listen:
-            pass
+            self.listen()
         else:
             self.send()
 
     def send(self):
-        self.server.connect((self.args.target, self.args.port))
+        try:
+            self.server.connect((self.args.target, self.args.port))
+        except ConnectionRefusedError as e:
+            print("Connection Error")
+            return
 
         if self.buffer:
             self.server.send(self.buffer)
@@ -38,6 +42,11 @@ class Netcat:
 
                 self.buffer = "\n>"
                 self.server.send(self.buffer.encode())
+            else:
+                self.server.close()
+
+    def listen(self):
+        pass
 
 
 def main():
