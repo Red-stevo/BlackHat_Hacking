@@ -66,8 +66,7 @@ class Netcat:
             client_thread.start()
 
     def client_handler(self):
-         pass
-
+        pass
 
 
 def main():
