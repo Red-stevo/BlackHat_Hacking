@@ -46,7 +46,7 @@ class Netcat:
                 except Exception as e:
                     self.server.send(b'Invalid command')
 
-                self.buffer = "\n>"
+                self.buffer = f"\n{sp.check_output('whoami', stderr=subprocess.STDOUT).decode('utf-8').strip()} > "
                 self.server.send(self.buffer.encode())
             else:
                 self.server.close()
@@ -55,17 +55,20 @@ class Netcat:
         try:
             self.server.bind((self.args.target, self.args.port))
         except Exception as e:
-            print("Error Binding To The POrt")
+            print("Error Binding To The Port")
+            return
 
         self.server.listen(5)
 
         while True:
             client, add = self.server.accept()
-            client_thread = threading.Thread(target=self.client_handler(), args=(client, ))
+            client_thread = threading.Thread(target=self.client_handler(), args=(client,))
             client_thread.start()
 
     def client_handler(self):
-        pass
+         pass
+
+
 
 def main():
     parser = ps.ArgumentParser(description="Netcat tool in python",
@@ -77,6 +80,8 @@ def main():
             -p  --port
             -c  --command
             -e  --execute
+                                     
+            quit/exit to terminate session.
                                      '''))
 
     parser.add_argument('-c', '--command', action='store_true', default='True', help='command shell')
@@ -90,7 +95,8 @@ def main():
     if args.listen:
         buffer = ''
     else:
-        buffer = "CONNECTED [ [*] ]\n >"
+        buffer = (f"CONNECTED"
+                  f" [ [*] ]\n {sp.check_output('whoami', stderr=subprocess.STDOUT).decode('utf-8').strip()} > ")
 
     nc = Netcat(args, buffer.encode())
     nc.run()
