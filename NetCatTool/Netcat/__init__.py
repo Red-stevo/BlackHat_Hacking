@@ -4,6 +4,7 @@ import socket
 import subprocess
 import textwrap as tw
 import subprocess as sp
+import threading
 
 
 class Netcat:
@@ -32,10 +33,15 @@ class Netcat:
         response = ' '
         while response:
             response = self.server.recv(4896)
+            response = response.decode()
+
+            if str(response) == "quit\n" or str(response) == "exit\n":
+                self.server.close()
+                return
 
             if response:
                 try:
-                    result = execute(response.decode())
+                    result = execute(response)
                     self.server.send(result.encode())
                 except Exception as e:
                     self.server.send(b'Invalid command')
@@ -46,8 +52,20 @@ class Netcat:
                 self.server.close()
 
     def listen(self):
-        pass
+        try:
+            self.server.bind((self.args.target, self.args.port))
+        except Exception as e:
+            print("Error Binding To The POrt")
 
+        self.server.listen(5)
+
+        while True:
+            client, add = self.server.accept()
+            client_thread = threading.Thread(target=self.client_handler(), args=(client, ))
+            client_thread.start()
+
+    def client_handler(self):
+        pass
 
 def main():
     parser = ps.ArgumentParser(description="Netcat tool in python",
