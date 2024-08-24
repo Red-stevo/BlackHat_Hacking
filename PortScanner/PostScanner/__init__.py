@@ -6,23 +6,23 @@ import textwrap
 
 
 class PostScanner:
-    def __init__(self, target_ip, target_port, args):
+    def __init__(self, target_ip, target_port, timeout):
         self.udp_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.target_ip = target_ip
         self.target_port = target_port
-        self.args = args
+        self.timeout = timeout
+        self.udp_client.settimeout(self.timeout)
         self.send_packet()
 
     def send_packet(self):
         addr = []
         self.udp_client.sendto(b'', (self.target_ip, self.target_port))
-        self.udp_client.settimeout(self.args.timeout)
 
         try:
             data, addr = self.udp_client.recvfrom(65565)
             print(f"Port {addr[1]} Opened")
         except Exception as e:
-            print(f"Port {addr[1]} Closed.")
+            print(f" Port : {self.target_port} Closed")
 
 
 def process_hosts(passed_address):
@@ -74,6 +74,7 @@ def main(passed_address, passed_port, passes_timeout):
     ports_range = process_ports(passed_port)
 
     for target in range(target_range[0], target_range[1] + 1):
+        print(f"TARGET {target_range[2]}{target}")
         for port in range(ports_range[0], ports_range[1] + 1):
             scanner = PostScanner(f"{target_range[2]}{target}", port, passes_timeout)
 
@@ -95,5 +96,7 @@ _init__.py -t 10.10.10.1  -p 21
     terminal_arguments.add_argument('-s', '--timeout', type=int, default=1, help="Specify The Timeout")
 
     arguments = terminal_arguments.parse_args()
-
-    main(arguments.target, arguments.port, arguments.timeout)
+    try:
+        main(arguments.target, arguments.port, int(arguments.timeout))
+    except KeyboardInterrupt as k:
+        logging.log("Exiting...")
