@@ -7,7 +7,7 @@ import textwrap
 
 class PostScanner:
     def __init__(self, target_ip, target_port, args):
-        self.udp_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_ICMP)
+        self.udp_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.target_ip = target_ip
         self.target_port = target_port
         self.args = args
@@ -48,12 +48,22 @@ def process_hosts(passed_address):
             return [int(const_ip[-1]), int(const_ip[-1]), str_ip]
         return [int(const_ip[-1]), int(ip_list[-1]), str_ip]
     except Exception as e:
-        logging.error("Invalid ip range.")
+        logging.error("Invalid ip range.", e.with_traceback())
         sys.exit(2)
 
 
 def process_ports(passed_port):
-    pass
+    ports = passed_port.split('-')
+
+    if len(ports) > 2:
+        logging.error("Invalid port range.")
+        sys.exit(3)
+
+    try:
+        return [int(ports[0]), int(ports[-1])]
+    except Exception as e:
+        logging.error("Invalid port range.", e)
+        sys.exit(3)
 
 
 def main(passed_address, passed_port, passes_timeout):
@@ -65,7 +75,7 @@ def main(passed_address, passed_port, passes_timeout):
 
     for target in range(target_range[0], target_range[1] + 1):
         for port in range(ports_range[0], ports_range[1] + 1):
-            scanner = PostScanner(f"{target_range[2]}{target}", port)
+            scanner = PostScanner(f"{target_range[2]}{target}", port, passes_timeout)
 
 
 if __name__ == "__main__":
