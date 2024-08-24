@@ -16,7 +16,7 @@ class PostScanner:
 
     def send_packet(self):
         addr = []
-        self.udp_client.sendto(b'', (self.target_ip, self.target_port))
+        self.udp_client.sendto(b'ACK', (self.target_ip, self.target_port))
 
         try:
             data, addr = self.udp_client.recvfrom(65565)
