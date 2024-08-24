@@ -7,6 +7,8 @@ HEX_FILTER = ''.join([(len(repr(chr(i))) == 3) and chr(i) or '.' for i in range(
 def hex_dump(packet, length=16):
     if isinstance(packet, bytes):
         packet = packet.decode()
+        print(packet)
+ct
 
     result = list()
     for i in range(0, len(packet), length):

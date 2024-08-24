@@ -22,6 +22,7 @@ class Netcat:
 
     def send(self):
         try:
+            print(self.args.target, self.args.port)
             self.server.connect((self.args.target, self.args.port))
         except ConnectionRefusedError as e:
             print("Connection Error")
@@ -53,6 +54,7 @@ class Netcat:
 
     def listen(self):
         try:
+
             self.server.bind((self.args.target, self.args.port))
         except Exception as e:
             print("Error Binding To The Port")
