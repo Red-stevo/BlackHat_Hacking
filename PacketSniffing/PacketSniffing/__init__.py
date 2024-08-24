@@ -31,7 +31,7 @@ class Sniffer_dog:
             self.sniffer_dog.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)
 
     def packet_sniff(self):
-        print(self.sniffer_dog.recv(65565))
+        print(self.sniffer_dog.recvfrom(65565).decode('utf-8'))
 
 
 def main():
