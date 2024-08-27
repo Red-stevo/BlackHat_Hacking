@@ -8,7 +8,6 @@ def hex_dump(packet, length=16):
     if isinstance(packet, bytes):
         packet = packet.decode()
         print(packet)
-ct
 
     result = list()
     for i in range(0, len(packet), length):
